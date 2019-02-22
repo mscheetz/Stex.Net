@@ -7,16 +7,15 @@
 
 namespace Stex.Net
 {
-    using global::Stex.Net.Contracts;
-    using global::Stex.Net.Repository;
     #region Usings
 
     using System;
     using System.Collections.Generic;
     using System.Text;
     using System.Threading.Tasks;
-
-
+    using global::Stex.Net.Contracts;
+    using global::Stex.Net.Repository;
+    
     #endregion Usings
 
     public class Stex : RepositoryBase, IStex
@@ -39,57 +38,109 @@ namespace Stex.Net
 
         #region Public Api
 
+        /// <summary>
+        /// Get available currencies
+        /// </summary>
+        /// <returns>Collection of CurrencyDetails</returns>
         public async Task<List<CurrencyDetail>> GetCurrencies()
         {
-            var endpoint = $@"/currencies";
+            var endpoint = $@"/public/currencies";
 
-            return await base.GetRequest<List<CurrencyDetail>>(endpoint);
+            return await base.Get<List<CurrencyDetail>>(endpoint);
         }
 
+        /// <summary>
+        /// Get detail about a currency
+        /// </summary>
+        /// <param name="id">Currency Id</param>
+        /// <returns>CurrencyDetails object</returns>
+        public async Task<CurrencyDetail> GetCurrencies(int id)
+        {
+            var endpoint = $@"/public/currencies/{id}";
+
+            return await base.Get<CurrencyDetail>(endpoint);
+        }
+
+        /// <summary>
+        /// Get list of all avialable markets
+        /// </summary>
+        /// <returns>Collection of Markets</returns>
         public async Task<List<Market>> GetMarkets()
         {
-            var endpoint = $@"/markets";
+            var endpoint = $@"/public/markets";
 
-            return await base.GetRequest<List<Market>>(endpoint);
+            return await base.Get<List<Market>>(endpoint);
         }
 
-        public async Task<Market> GetMarket(string currency1, string currency2)
+        /// <summary>
+        /// Returns a list of avialable currency pairs.
+        /// </summary>
+        /// <returns>Collection of currency pairs</returns>
+        public async Task<List<CurrencyPair>> GetCurrencyPairs()
         {
-            var endpoint = $@"/market_summary/{currency1}/{currency2}";
+            var endpoint = $@"/public/currency_pairs/list/ALL";
 
-            return await base.GetRequest<Market>(endpoint);
+            return await base.Get<List<CurrencyPair>>(endpoint);
         }
 
+        /// <summary>
+        /// Returns a list of avialable currency pairs in the given market.
+        /// </summary>
+        /// <param name="symbol">Market symbol</param>
+        /// <returns>Collection of currency pairs</returns>
+        public async Task<List<CurrencyPair>> GetCurrencyPairs(string symbol)
+        {
+            var endpoint = $@"/public/currency_pairs/list/{symbol}";
+
+            return await base.Get<List<CurrencyPair>>(endpoint);
+        }
+
+        /// <summary>
+        /// Returns a currency pairs.
+        /// </summary>
+        /// <param name="id">Currency Pair Id</param>
+        /// <returns>CurrencyPair object</returns>
+        public async Task<CurrencyPair> GetCurrencyPair(int id)
+        {
+            var endpoint = $@"/public/currency_pairs/{id}";
+
+            return await base.Get<CurrencyPair>(endpoint);
+        }
+
+        /// <summary>
+        /// Tickers list for all currency pairs
+        /// </summary>
+        /// <returns>Collection of Ticker</returns>
         public async Task<List<Ticker>> GetTickers()
         {
-            var endpoint = $@"/ticker";
+            var endpoint = $@"/public/ticker";
 
-            return await base.GetRequest<List<Ticker>>(endpoint);
+            return await base.Get<List<Ticker>>(endpoint);
         }
 
         public async Task<List<PairRate>> GetPrices()
         {
             var endpoint = $@"/prices";
 
-            return await base.GetRequest<List<PairRate>>(endpoint);
+            return await base.Get<List<PairRate>>(endpoint);
         }
 
         public async Task<List<Trade>> GetTrades(string pair)
         {
             var endpoint = $@"/trades?pair={pair}";
 
-            var response = await base.GetRequest<ResponseBase<List<Trade>>>(endpoint);
+            var response = await base.Get<ResponseBase<List<Trade>>>(endpoint);
 
-            return response.Result;
+            return response.Data;
         }
 
         public async Task<OrderBook> GetOrderBook(string pair)
         {
             var endpoint = $@"/orderbook?pair={pair}";
 
-            var response = await base.GetRequest<ResponseBase<OrderBook>>(endpoint);
+            var response = await base.Get<ResponseBase<OrderBook>>(endpoint);
 
-            return response.Result;
+            return response.Data;
         }
 
         #endregion Public Api

@@ -20,8 +20,8 @@ namespace Stex.Net.Contracts
         [JsonProperty(PropertyName = "success")]
         public int Success { get; set; }
 
-        [JsonProperty(PropertyName = "result")]
-        public T Result { get; set; }
+        [JsonProperty(PropertyName = "data")]
+        public T Data { get; set; }
 
         #endregion Properties
     }

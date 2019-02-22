@@ -13,8 +13,7 @@ namespace Stex.Net.Contracts
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Text;
-
-
+    
     #endregion Usings
 
     public enum Side
