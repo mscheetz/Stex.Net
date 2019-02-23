@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
-// <copyright file="Trade" company="Matt Scheetz">
+// <copyright file="OrderFee" company="Matt Scheetz">
 //     Copyright (c) Matt Scheetz All Rights Reserved
 // </copyright>
-// <author name="Matt Scheetz" date="2/3/2019 10:04:39 PM" />
+// <author name="Matt Scheetz" date="2/22/2019 9:17:55 AM" />
 // -----------------------------------------------------------------------------
 
 namespace Stex.Net.Contracts
@@ -13,24 +13,24 @@ namespace Stex.Net.Contracts
 
     #endregion Usings
 
-    public class Trade
+    public class OrderFee
     {
         #region Properties
 
         [JsonProperty(PropertyName = "id")]
-        public int OrderId { get; set; }
+        public int FeeId { get; set; }
 
-        [JsonProperty(PropertyName = "timestamp")]
-        public long Timestamp { get; set; }
+        [JsonProperty(PropertyName = "currency_id")]
+        public int FeeCurrencyId { get; set; }
+
+        [JsonProperty(PropertyName = "currency_symbol")]
+        public int FeeCurrency { get; set; }
 
         [JsonProperty(PropertyName = "amount")]
         public decimal Quantity { get; set; }
 
-        [JsonProperty(PropertyName = "price")]
-        public decimal Price { get; set; }
-
-        [JsonProperty(PropertyName = "type")]
-        public Side Side { get; set; }
+        [JsonProperty(PropertyName = "timestamp")]
+        public long Timestamp { get; set; }
 
         #endregion Properties
     }

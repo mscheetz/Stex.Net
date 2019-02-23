@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
-// <copyright file="OrderBook" company="Matt Scheetz">
+// <copyright file="PingResponse" company="Matt Scheetz">
 //     Copyright (c) Matt Scheetz All Rights Reserved
 // </copyright>
-// <author name="Matt Scheetz" date="2/3/2019 10:10:45 PM" />
+// <author name="Matt Scheetz" date="2/22/2019 8:35:33 AM" />
 // -----------------------------------------------------------------------------
 
 namespace Stex.Net.Contracts
@@ -10,19 +10,18 @@ namespace Stex.Net.Contracts
     #region Usings
 
     using Newtonsoft.Json;
-    using System.Collections.Generic;
 
     #endregion Usings
 
-    public class OrderBook
+    public class PingResponse
     {
         #region Properties
 
-        [JsonProperty(PropertyName = "bid")]
-        public List<OrderBookDetail> Bids { get; set; }
+        [JsonProperty(PropertyName = "server_datetime")]
+        public ServerTime ServerDateTime { get; set; }
 
-        [JsonProperty(PropertyName = "ask")]
-        public List<OrderBookDetail> Asks { get; set; }
+        [JsonProperty(PropertyName = "server_timestamp")]
+        public long Timestamp { get; set; }
 
         #endregion Properties
     }

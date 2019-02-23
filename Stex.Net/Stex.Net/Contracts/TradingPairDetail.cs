@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// <copyright file="Market" company="Matt Scheetz">
+// <copyright file="TradingPairDetail" company="Matt Scheetz">
 //     Copyright (c) Matt Scheetz All Rights Reserved
 // </copyright>
 // <author name="Matt Scheetz" date="2/3/2019 9:47:34 PM" />
@@ -13,7 +13,7 @@ namespace Stex.Net.Contracts
 
     #endregion Usings
 
-    public class CurrencyPair
+    public class TradingPairDetail
     {
         #region Properties
 
