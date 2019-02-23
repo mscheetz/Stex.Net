@@ -76,6 +76,13 @@ namespace Stex.Net.Repository
         /// <returns>Object from response</returns>
         public async Task<T> Get<T>(string endpoint, SortedDictionary<string, object> parms, bool secure = false)
         {
+            var queryString = DictionaryToQueryString(parms);
+
+            if(!string.IsNullOrEmpty(queryString))
+            {
+                endpoint += $@"?{queryString}";
+            }
+
             return await OnGet<T>(endpoint, secure);
         }
 
@@ -165,6 +172,53 @@ namespace Stex.Net.Repository
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Initiate a Delete request
+        /// </summary>
+        /// <typeparam name="T">Object to return</typeparam>
+        /// <param name="endpoint">Endpoint of request</param>
+        /// <param name="secure">Secure endpoint?</param>
+        /// <returns>Object from response</returns>
+        public async Task<T> Delete<T>(string endpoint, bool secure = true)
+        {
+            var url = baseUrl + endpoint;
+
+            try
+            {
+                var response = secure
+                    ? await _rest.DeleteApi<ResponseBase<T>>(url, _apiCreds.ApiKey, _apiCreds.ApiSecret)
+                    : await _rest.DeleteApi<ResponseBase<T>>(url);
+
+                return response.Data;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Convert a dictionary to a query string
+        /// </summary>
+        /// <param name="data">Dictionary to convert</param>
+        /// <returns>String of dictionary data</returns>
+        public string DictionaryToQueryString(SortedDictionary<string, object> data)
+        {
+            var queryString = string.Empty;
+
+            foreach(var kvp in data)
+            {
+                if(!string.IsNullOrEmpty(queryString))
+                {
+                    queryString += $@"&";
+                }
+
+                queryString += $@"{kvp.Key}={kvp.Value.ToString()}";
+            }
+
+            return queryString;
         }
     }
 }
