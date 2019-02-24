@@ -18,7 +18,7 @@ namespace Stex.Net.Contracts
         #region Properties
 
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "code")]
         public string Symbol { get; set; }

@@ -21,20 +21,108 @@ namespace Stex.Net
     public class Stex : RepositoryBase, IStex
     {
         #region Properties
+
+        private Dictionary<string, string> _currencies;
+        private Dictionary<string, string> _tradingPairs;
+
         #endregion Properties
 
         #region Constructor
 
+        /// <summary>
+        /// Constructor for public api only
+        /// </summary>
         public Stex() : base()
-        { }
+        {
+            LoadStex();
+        }
 
+        /// <summary>
+        /// Constructor for public and private api
+        /// </summary>
+        /// <param name="apiKey">Api Key</param>
+        /// <param name="apiSecret">Api Secret</param>
         public Stex(string apiKey, string apiSecret) : this(new ApiCredentials { ApiKey = apiKey, ApiSecret = apiSecret })
         { }
 
+        /// <summary>
+        /// Constructor for public and private api
+        /// </summary>
+        /// <param name="creds">ApiCredentials object</param>
         public Stex(ApiCredentials creds) : base(creds)
-        { }
+        {
+            LoadStex();
+        }
+
+        /// <summary>
+        /// Load Stex
+        /// </summary>
+        private void LoadStex()
+        {
+            var currencyList = GetCurrencies().Result;
+            _currencies = new Dictionary<string, string>();
+
+            for (var i = 0; i < currencyList.Count; i++)
+            {
+                _currencies.Add(currencyList[i].Symbol, currencyList[i].Id.ToString());
+                _currencies.Add(currencyList[i].Id.ToString(), currencyList[i].Symbol);
+            }
+
+            var pairList = GetTradingPairDetails().Result;
+            _tradingPairs = new Dictionary<string, string>();
+
+            for (var i = 0; i < pairList.Count; i++)
+            {
+                _tradingPairs.Add(pairList[i].Id.ToString(), pairList[i].Pair);
+                _tradingPairs.Add(pairList[i].Pair, pairList[i].Id.ToString());
+                _tradingPairs.Add(pairList[i].Pair.Replace("_", @"/"), pairList[i].Id.ToString());
+                _tradingPairs.Add(pairList[i].Pair.Replace("_", ""), pairList[i].Id.ToString());
+            }
+        }
 
         #endregion Constructor
+
+        #region Public Methods
+
+        /// <summary>
+        /// Get all exchange currencies
+        /// </summary>
+        /// <returns>Dictionary of currencies and associated ids</returns>
+        public Dictionary<string, string> GetExchangeCurrencies()
+        {
+            return _currencies;
+        }
+
+        /// <summary>
+        /// Get all exchange trading pairs
+        /// </summary>
+        /// <returns>Dictionary of trading pairs and associated ids</returns>
+        public Dictionary<string, string> GetExchangePairs()
+        {
+            return _tradingPairs;
+        }
+
+        /// <summary>
+        /// Get exchange id for a currency
+        /// </summary>
+        /// <param name="symbol">Currency symbol</param>
+        /// <returns>Currency Id</returns>
+        public int GetExchangeCurrencyId(string symbol)
+        {
+            return Int32.Parse(_currencies[symbol]);
+        }
+
+        /// <summary>
+        /// Get exchange id for a trading pair
+        /// </summary>
+        /// <param name="pair">Trading pair</param>
+        /// <returns>Trading Pair Id</returns>
+        public int GetExchangePairId(string pair)
+        {
+            return Int32.Parse(_tradingPairs[pair]);
+        }
+
+        #endregion Public Methods
 
         #region Public Api
 
@@ -54,7 +142,7 @@ namespace Stex.Net
         /// </summary>
         /// <param name="currencyId">Currency Id</param>
         /// <returns>CurrencyDetails object</returns>
-        public async Task<CurrencyDetail> GetCurrencies(int currencyId)
+        public async Task<CurrencyDetail> GetCurrency(int currencyId)
         {
             var endpoint = $@"/public/currencies/{currencyId}";
 
@@ -574,11 +662,48 @@ namespace Stex.Net
         /// </summary>
         /// <param name="withdrawalId">Withdrawal Id</param>
         /// <returns>Withdrawal object</returns>
-        public async Task<Deposit> GetWithdrawal(int withdrawalId)
+        public async Task<Withdrawal> GetWithdrawal(int withdrawalId)
         {
             var endpoint = $@"/profile/withdrawals/{withdrawalId}";
 
-            return await base.Get<Deposit>(endpoint, true);
+            return await base.Get<Withdrawal>(endpoint, true);
+        }
+
+        /// <summary>
+        /// Create a withdrawal
+        /// </summary>
+        /// <param name="currencyId">Currency Id</param>
+        /// <param name="quantity">Quantity to withdrawal</param>
+        /// <param name="address">Address to withdrawal to</param>
+        /// <param name="memo">Memo for address (not required)</param>
+        /// <returns></returns>
+        public async Task<Withdrawal> Withdrawal(int currencyId, decimal quantity, string address, string memo = "")
+        {
+            var endpoint = $@"/profile/withdrawals";
+            var parms = new SortedDictionary<string, object>();
+            parms.Add("currency_id", currencyId);
+            parms.Add("amount", quantity);
+            parms.Add("address", address);
+            if(!string.IsNullOrEmpty(memo))
+            {
+                parms.Add("additional_address", memo);
+            }
+            
+            return await base.Post<Withdrawal>(endpoint, parms);
+        }
+
+        /// <summary>
+        /// Cancel an unconfirmed withdrawal
+        /// </summary>
+        /// <param name="withdrawalId">Withdrawal Id</param>
+        /// <returns>Boolean of cancellation attempt</returns>
+        public async Task<bool> CancelWithdrawal(int withdrawalId)
+        {
+            var endpoint = $@"/profile/withdraw/{withdrawalId}";
+
+            var result = await base.Delete<Dictionary<string, bool>>(endpoint);
+
+            return result["result"];
         }
 
         #endregion Profile Api
