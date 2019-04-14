@@ -44,7 +44,7 @@ namespace Stex.Net.Contracts
         [JsonProperty(PropertyName = "deposit_fee_currency_id")]
         public int DepositFeeId { get; set; }
 
-        [JsonProperty(PropertyName = "deposit_fee_currency")]
+        [JsonProperty(PropertyName = "deposit_fee_currency_code")]
         public string DepositFeeCurrency { get; set; }
 
         [JsonProperty(PropertyName = "deposit_fee_const")]
@@ -56,7 +56,7 @@ namespace Stex.Net.Contracts
         [JsonProperty(PropertyName = "withdrawal_fee_currency_id")]
         public int WithdrawalFeeId { get; set; }
 
-        [JsonProperty(PropertyName = "withdrawal_fee_currency")]
+        [JsonProperty(PropertyName = "withdrawal_fee_currency_code")]
         public string WithdrawalFeeCurrency { get; set; }
 
         [JsonProperty(PropertyName = "withdrawal_fee_const")]
