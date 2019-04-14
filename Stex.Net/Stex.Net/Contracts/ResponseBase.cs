@@ -18,7 +18,7 @@ namespace Stex.Net.Contracts
         #region Properties
 
         [JsonProperty(PropertyName = "success")]
-        public int Success { get; set; }
+        public bool Success { get; set; }
 
         [JsonProperty(PropertyName = "data")]
         public T Data { get; set; }
